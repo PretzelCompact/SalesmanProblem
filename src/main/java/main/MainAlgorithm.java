@@ -87,7 +87,7 @@ public class MainAlgorithm {
             var survivedSolutions = new ArrayList<>(newSolutions.stream().limit(params.numberOfSurvivedSolutions).toList());
             /*for(int i = 0; i < params.numberOfSurvivedSolutions; i++){
                 int n = selection.roulette(newSolutions.stream()
-                        .mapToDouble(s-> solutionEstimater.estimateComplexSolution(s))
+                        .mapToDouble(s-> 1d/solutionEstimater.estimateComplexSolution(s))
                         .toArray()
                 );
                 survivedSolutions.add(newSolutions.get(n));

@@ -19,7 +19,7 @@ public class MainClass {
         algorithmParams.numberOfStrongMutated = 1;
         algorithmParams.numberOfMediumMutated = 5;
         algorithmParams.numberOfLowMutated = 20;
-        algorithmParams.numberOfSurvivedSolutions = 5;
+        algorithmParams.numberOfSurvivedSolutions = 10;
         algorithmParams.notDeliveredPunishment = 1;
         algorithmParams.outOfTimePunishment = 1;
         algorithmParams.lowMutationProbability = .1d;

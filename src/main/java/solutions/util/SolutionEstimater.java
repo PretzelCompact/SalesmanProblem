@@ -101,14 +101,14 @@ public class SolutionEstimater {
                 time * salesman.getCostPerTime();
 
 
-        /*
+
         if(costModifier != 1)
             return Double.MAX_VALUE / 1024;
         else
             return cost;
-        */
 
-        return cost * costModifier;
+
+        //return cost * costModifier;
     }
 
     public double estimateComplexSolution(ComplexSolution solution){

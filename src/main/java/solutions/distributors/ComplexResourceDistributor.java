@@ -79,6 +79,11 @@ public class ComplexResourceDistributor {
             info.weightPicked += resource.getWeight();
         }
 
+        for(var s : salesmen){
+            if(!salesmenInfo.containsKey(s))
+                return generateNewDistribution(salesmen, resources);
+        }
+
         return result;
     }
 
