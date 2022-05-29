@@ -19,26 +19,41 @@ public class SolutionEstimater {
 
     private City city;
     private double notDeliveredPunishment; //любое положительное число
-    private double outOfTimePunishment;
+    private double outOfWorkingTimePunishment;
+    private double minStartWorkingTime;
+    private double maxStartWorkingTime;
+    private double deltaStartWorkingTime;
+    private double outOfDeliveryTimePunishment;
 
-    public SolutionEstimater(City city, double notDeliveredPunishment, double outOfTimePunishment) {
+    public SolutionEstimater(City city, double notDeliveredPunishment, double outOfWorkingTimePunishment, double minStartWorkingTime, double maxStartWorkingTime, double deltaStartWorkingTime, double outOfDeliveryTimePunishment) {
         this.city = city;
         this.notDeliveredPunishment = notDeliveredPunishment;
-        this.outOfTimePunishment = outOfTimePunishment;
+        this.outOfWorkingTimePunishment = outOfWorkingTimePunishment;
+        this.minStartWorkingTime = minStartWorkingTime;
+        this.maxStartWorkingTime = maxStartWorkingTime;
+        this.deltaStartWorkingTime = deltaStartWorkingTime;
+        this.outOfDeliveryTimePunishment = outOfDeliveryTimePunishment;
     }
 
     public double estimateSimpleSolution(SimpleSolution solution){
-        //var start = System.nanoTime();
         var estimatedValue = solution.getEstimatedValue();
         if(estimatedValue.isEmpty()) {
-            estimatedValue = Optional.of(calculateSimpleSolutionCost(solution));
+
+            double minCost = Double.MAX_VALUE;
+            double startWorkingTime = minStartWorkingTime;
+            while(startWorkingTime <= maxStartWorkingTime){
+                double cost = calculateSimpleSolutionCost(solution, startWorkingTime);
+                if(cost < minCost)
+                    minCost = cost;
+                startWorkingTime += deltaStartWorkingTime;
+            }
+
+            estimatedValue = Optional.of(minCost);
         }
-        //var finish = System.nanoTime();
-        //System.out.println((finish - start) / 1000000000d);
         return estimatedValue.get();
     }
 
-    private double calculateSimpleSolutionCost(SimpleSolution solution){
+    private double calculateSimpleSolutionCost(SimpleSolution solution, double startTime){
 
         var baseIndices = solution.getBaseIndices();
         var route = solution.getRoute();
@@ -61,8 +76,9 @@ public class SolutionEstimater {
             var curVertex = route.get(i-1);
             var nextVertex = route.get(i);
 
-            //System.out.println("[" + curVertex + ", " + nextVertex + "]");
-            var movementInfo = city.getRoad(curVertex, nextVertex).getMovementInfo(time);
+            double curTime = time + startTime;
+
+            var movementInfo = city.getRoad(curVertex, nextVertex).getMovementInfo(curTime);
             time += movementInfo.passedTime;
             distance += movementInfo.passedDistance;
 
@@ -86,6 +102,10 @@ public class SolutionEstimater {
                 } else if(r.getFinishVertex() == nextVertex && resourcePicked){
                     deliveredList.add(r);
                     weight -= r.getWeight();
+
+                    if(r.getMinDeliveryTime() > curTime || r.getMaxDeliveryTime() < curTime){
+                        costModifier += outOfDeliveryTimePunishment;
+                    }
                 }
             }
 
@@ -94,21 +114,13 @@ public class SolutionEstimater {
             });
         }
 
-        if(time > salesman.getMaxWorkingTime())
-            costModifier += outOfTimePunishment;
+        if(time > salesman.getWorkDuration())
+            costModifier += outOfWorkingTimePunishment;
 
         double cost = distance * salesman.getCostPerDistance() +
                 time * salesman.getCostPerTime();
 
-
-
-        if(costModifier != 1)
-            return Double.MAX_VALUE / 1024;
-        else
-            return cost;
-
-
-        //return cost * costModifier;
+        return cost * costModifier;
     }
 
     public double estimateComplexSolution(ComplexSolution solution){

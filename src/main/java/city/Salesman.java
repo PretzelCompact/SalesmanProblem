@@ -11,26 +11,30 @@ public class Salesman {
     private double maxWeight;
     private double costPerTime;
     private double costPerDistance;
-    private double maxWorkingTime;
+    private double workDuration;
+    private double minStartWorkingTime;
+    private double maxStartWorkingTime;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Salesman salesman = (Salesman) o;
-        return Double.compare(salesman.maxWeight, maxWeight) == 0 && Double.compare(salesman.costPerTime, costPerTime) == 0 && Double.compare(salesman.costPerDistance, costPerDistance) == 0 && Double.compare(salesman.maxWorkingTime, maxWorkingTime) == 0;
+        return Double.compare(salesman.maxWeight, maxWeight) == 0 && Double.compare(salesman.costPerTime, costPerTime) == 0 && Double.compare(salesman.costPerDistance, costPerDistance) == 0 && Double.compare(salesman.workDuration, workDuration) == 0;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(maxWeight, costPerTime, costPerDistance, maxWorkingTime);
+        return Objects.hash(maxWeight, costPerTime, costPerDistance, workDuration);
     }
 
-    public Salesman(double maxWeight, double costPerTime, double costPerDistance, double maxWorkingTime){
+    public Salesman(double maxWeight, double costPerTime, double costPerDistance, double workDuration, double minStartWorkingTime, double maxStartWorkingTime){
         this.maxWeight = maxWeight;
         this.costPerTime = costPerTime;
         this.costPerDistance = costPerDistance;
-        this.maxWorkingTime = maxWorkingTime;
+        this.workDuration = workDuration;
+        this.minStartWorkingTime = minStartWorkingTime;
+        this.maxStartWorkingTime = maxStartWorkingTime;
     }
 
     public double getMaxWeight() {
@@ -45,7 +49,15 @@ public class Salesman {
         return costPerDistance;
     }
 
-    public double getMaxWorkingTime() {
-        return maxWorkingTime;
+    public double getWorkDuration() {
+        return workDuration;
+    }
+
+    public double getMinStartWorkingTime() {
+        return minStartWorkingTime;
+    }
+
+    public double getMaxStartWorkingTime() {
+        return maxStartWorkingTime;
     }
 }

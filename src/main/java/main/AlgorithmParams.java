@@ -9,7 +9,10 @@ public class AlgorithmParams {
     public double notDeliveredPunishment;
 
     //Наказание (множитель стоимости решения) за "просрочку" времени работы коммивояжёра
-    public double outOfTimePunishment;
+    public double outOfWorkingTimePunishment;
+
+    //
+    public double outOfDeliveryTimePunishment;
 
     //Количество простых решений, которые затронет простая мутация
     public int numberOfSimpleSolutionsToMutateDuringLowMutation;
@@ -28,4 +31,8 @@ public class AlgorithmParams {
 
     //Количество лёгких мутанов на каждого выживышего итерации
     public int numberOfLowMutated;
+
+    public double minStartWorkingTime;
+    public double maxStartWorkingTime;
+    public double deltaStartWorkingTime;
 }

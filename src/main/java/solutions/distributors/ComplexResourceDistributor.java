@@ -94,7 +94,7 @@ public class ComplexResourceDistributor {
         Например, выдаёт большее значение, если коммивояжёр набрал мало груза
          */
 
-        double maxWorkingTime = salesman.getMaxWorkingTime();
+        double maxWorkingTime = salesman.getWorkDuration();
         double maxWeight = salesman.getMaxWeight();
         double weight = resource.getWeight();
         double maxDeliveryTime = resource.getMaxDeliveryTime();

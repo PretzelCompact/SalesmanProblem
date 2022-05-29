@@ -38,6 +38,7 @@ public class MediumComplexSolutionMutator {
 
         for(var n : indicesToMutate){
             var s = simpleSolutions.get(n);
+
             var mutatedS = simpleSolutionGenerator.generate(s.getResources(), s.getSalesman());
             simpleSolutions.set(n, mutatedS);
         }

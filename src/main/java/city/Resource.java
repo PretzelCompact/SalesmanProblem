@@ -6,13 +6,15 @@ public class Resource {
     private double weight;
     private int startVertex;
     private int finishVertex;
+    private double minDeliveryTime;
     private double maxDeliveryTime;
 
-    public Resource(double weight, int startVertex, int finishVertex, double maxTime){
+    public Resource(double weight, int startVertex, int finishVertex, double minDeliveryTime, double maxDeliveryTime){
         this.weight = weight;
         this.startVertex = startVertex;
         this.finishVertex = finishVertex;
-        this.maxDeliveryTime = maxTime;
+        this.minDeliveryTime = minDeliveryTime;
+        this.maxDeliveryTime = maxDeliveryTime;
     }
 
     public double getWeight() {
@@ -27,6 +29,8 @@ public class Resource {
         return finishVertex;
     }
 
+    public double getMinDeliveryTime() { return minDeliveryTime; }
+
     public double getMaxDeliveryTime() {
         return maxDeliveryTime;
     }
@@ -36,11 +40,12 @@ public class Resource {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Resource resource = (Resource) o;
-        return Double.compare(resource.weight, weight) == 0 && startVertex == resource.startVertex && finishVertex == resource.finishVertex && Double.compare(resource.maxDeliveryTime, maxDeliveryTime) == 0;
+        return Double.compare(resource.weight, weight) == 0 && startVertex == resource.startVertex && finishVertex == resource.finishVertex && Double.compare(resource.getMaxDeliveryTime(), getMaxDeliveryTime()) == 0;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(weight, startVertex, finishVertex, maxDeliveryTime);
+        return Objects.hash(weight, startVertex, finishVertex, getMaxDeliveryTime());
     }
+
 }

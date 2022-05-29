@@ -60,7 +60,20 @@ public class OneSalesmanResourceDistributor {
 
         }
 
-        return Arrays.stream(basePoints).toList();
+        //Remove duplicates
+        var list = new ArrayList<>(Arrays.stream(basePoints).toList());
+        var lastPoint = list.get(0);
+        for(int i = 1; i < list.size(); i++){
+            var curPoint = list.get(i);
+            if(curPoint.equals(lastPoint)){
+                list.remove(i);
+                i--;
+            } else{
+                lastPoint = curPoint;
+            }
+        }
+
+        return list;
     }
 
     private <N extends Number> void insertValueIntoArray(N[] array, N value, int index){

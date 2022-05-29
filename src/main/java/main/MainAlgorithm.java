@@ -44,7 +44,7 @@ public class MainAlgorithm {
 
         this.rnd = rnd;
         selection = new Selection(rnd);
-        solutionEstimater = new SolutionEstimater(city, params.notDeliveredPunishment, params.outOfTimePunishment);
+        solutionEstimater = new SolutionEstimater(city, params.notDeliveredPunishment, params.outOfWorkingTimePunishment, params.minStartWorkingTime, params.maxStartWorkingTime, params.deltaStartWorkingTime, params.outOfWorkingTimePunishment);
 
         oneSalesmanResourceDistributor = new OneSalesmanResourceDistributor(selection);
         complexResourceDistributor = new ComplexResourceDistributor(city, selection, solutionEstimater, oneSalesmanResourceDistributor);

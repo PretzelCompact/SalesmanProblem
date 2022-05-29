@@ -1,9 +1,6 @@
 package main;
 
-import city.generators.CityGenerator;
-import city.generators.ResourceGenerator;
-import city.generators.RoadGenerator;
-import city.generators.SalesmanGenerator;
+import city.generators.*;
 import city.generators.params.CityGeneratorParams;
 import city.generators.params.ResourceGeneratorParams;
 import city.generators.params.RoadGeneratorParams;
@@ -21,12 +18,18 @@ public class MainClass {
         algorithmParams.numberOfLowMutated = 20;
         algorithmParams.numberOfSurvivedSolutions = 10;
         algorithmParams.notDeliveredPunishment = 1;
-        algorithmParams.outOfTimePunishment = 1;
+        algorithmParams.outOfWorkingTimePunishment = 1;
+        algorithmParams.outOfDeliveryTimePunishment = 1;
         algorithmParams.lowMutationProbability = .1d;
         algorithmParams.numberOfSolutionsToMutateDuringMediumMutation = 5;
         algorithmParams.numberOfSimpleSolutionsToMutateDuringLowMutation = 5;
+        algorithmParams.minStartWorkingTime = 4d;
+        algorithmParams.maxStartWorkingTime = 13d;
+        algorithmParams.deltaStartWorkingTime = 1d;
 
-        var cityParams = new CityGeneratorParams();
+        var rnd = new Random(LocalDateTime.now().getNano());
+
+        /*var cityParams = new CityGeneratorParams();
         cityParams.connectivityRate = .1d;
         cityParams.numberOfVertices = 1000;
         cityParams.startVertex = 0;
@@ -36,8 +39,10 @@ public class MainClass {
         var resourceParams = new ResourceGeneratorParams();
         resourceParams.minWeight = 70;
         resourceParams.maxWeight = 100;
-        resourceParams.minDeliveryTime = 8;
-        resourceParams.maxDeliveryTime = 16;
+        resourceParams.minLowerDeliveryTime = 7;
+        resourceParams.maxLowerDeliveryTime = 10;
+        resourceParams.minUpperDeliveryTime = 10.5;
+        resourceParams.maxUpperDeliveryTime = 16;
         resourceParams.numberOfVertices = cityParams.numberOfVertices;
         resourceParams.startVertex = cityParams.startVertex;
 
@@ -58,15 +63,18 @@ public class MainClass {
         roadParams.maxSpeed = 60;
         roadParams.numberOfSpeeds = 48;
 
-        var rnd = new Random(LocalDateTime.now().getNano());
-        var resourceGenerator = new ResourceGenerator(resourceParams, rnd);
-        var salesmanGenerator = new SalesmanGenerator(salesmanParams, rnd);
-        var roadGenerator = new RoadGenerator(roadParams, rnd);
-        var cityGenerator = new CityGenerator(cityParams, resourceGenerator, salesmanGenerator,roadGenerator, rnd);
+        var resourceGenerator = new ResourceRandomGenerator(resourceParams, rnd);
+        var salesmanGenerator = new SalesmanRandomGenerator(salesmanParams, rnd);
+        var roadGenerator = new RoadRandomGenerator(roadParams, rnd);
+        var cityGenerator = new CityRandomGenerator(cityParams, resourceGenerator, salesmanGenerator,roadGenerator, rnd);
 
         var city = cityGenerator.generateCity();
-        var algorithm = new MainAlgorithm(algorithmParams, city, rnd);
+         */
 
+        var generator = new CityGeneratorCSV("graph_info.csv", "res_info.csv", "vehicles_info.csv", 295242, rnd);
+        var city = generator.generate();
+
+        var algorithm = new MainAlgorithm(algorithmParams, city, rnd);
         algorithm.computeSolution();
     }
 }
