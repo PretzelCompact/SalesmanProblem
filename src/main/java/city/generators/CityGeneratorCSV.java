@@ -141,6 +141,13 @@ public class CityGeneratorCSV {
         return salesmen;
     }
 
+    /**
+     * Получить отправную вершину для коммивояжёров из матрицы дорог
+     * @param roads
+     * Матрица дорог
+     * @return
+     * Индекс вершины из матрицы дорог
+     */
     private int getStartVertex(Road[][] roads){
 
         double x = 39.607592d;
@@ -149,6 +156,17 @@ public class CityGeneratorCSV {
         return getVertexFromRoad(roads, x, y);
     }
 
+    /**
+     * Получить самую близкую вершину по широте и долготе из матрицы дорого
+     * @param roads
+     * Матрица дорог
+     * @param x
+     * Долгота
+     * @param y
+     * Широта
+     * @return
+     * Индекс вершины из матрицы дорог
+     */
     private int getVertexFromRoad(Road[][] roads, double x, double y){
         for(int i = 0; i < roads.length; i++){
             for(int j = i + 1; j < roads[0].length; j++){
@@ -167,6 +185,21 @@ public class CityGeneratorCSV {
         throw  new RuntimeException("Vertex (" + x + ", " + y + ") doesn't exist in graph");
     }
 
+    /**
+     * Находится ли точка внутри указанной окружности
+     * @param pX
+     * x-координата точки
+     * @param pY
+     * y-координата точки
+     * @param cX
+     * x-кооридната центра окружности
+     * @param cY
+     * y-координата центра окружности
+     * @param radius
+     * Радиус окружности
+     * @return
+     * true, если точка находится внутри указанной окружности
+     */
     private boolean isPointInsideCircle(double pX, double pY, double cX, double cY, double radius){
         double dX = pX - cX;
         double dY = pY - cY;
@@ -174,6 +207,14 @@ public class CityGeneratorCSV {
         return distance <= radius;
     }
 
+
+    /**
+     * Преобразовать время в формате String вида "HH-MM"
+     * @param strTime
+     * Преобразуемая строка
+     * @return
+     * Число часов с момента 00-00
+     */
     private double convertStringToTime(String strTime){
         var strs = strTime.split("-");
 

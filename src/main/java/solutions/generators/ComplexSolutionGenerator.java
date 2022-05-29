@@ -6,6 +6,9 @@ import solutions.distributors.ComplexResourceDistributor;
 
 import java.util.ArrayList;
 
+/**
+ * Генерирует полное решение задачи (для всех коммивояжёров)
+ */
 public class ComplexSolutionGenerator {
 
     private SimpleSolutionGenerator simpleSolutionGenerator;

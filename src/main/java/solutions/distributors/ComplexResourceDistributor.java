@@ -8,16 +8,15 @@ import solutions.util.SolutionEstimater;
 
 import java.util.*;
 
+/**
+ * Класс, который распределяет ресурсы между коммивояжёрами
+ */
 public class ComplexResourceDistributor {
 
-    /*
-    ComplexResourceDistributor.
-    Класс, который распределяет ресерсы между коммивояжёрами
-    Для этого генерирует HashMap
+
+    /**
+     * Класс, представляющий параметры коммивояжёра при распределении ресурсов
      */
-
-
-
     class SalesmanInfo{
         public double weightPicked;
         //ma be more params?
@@ -35,6 +34,11 @@ public class ComplexResourceDistributor {
         this.oneSalesmanResourceDistributor = oneSalesmanResourceDistributor;
     }
 
+    /**
+     * Генерирует распределение ресурсов в виде пар (коммивожёр-список ресурсов)
+     * @return
+     * Распределение в установленном городе
+     */
     public HashMap<Salesman, List<Resource>> generateNewDistribution(){
 
         var salesmen = city.getSalesmen();
@@ -48,6 +52,7 @@ public class ComplexResourceDistributor {
         var result = new HashMap<Salesman, List<Resource>>();
         var salesmenInfo = new HashMap<Salesman, SalesmanInfo>();
 
+        //Генерация начальных параметров коммивояжёров
         Arrays.stream(salesmen)
                 .forEach(s->{
                     var info = new SalesmanInfo();
@@ -58,6 +63,7 @@ public class ComplexResourceDistributor {
 
         for(var resource : resources){
 
+            //Получение значений функции распределения для каждого коммивояжёра
             var values = Arrays.stream(salesmen)
                     .mapToDouble(s->{
                         var info = salesmenInfo.get(s);
@@ -87,12 +93,19 @@ public class ComplexResourceDistributor {
         return result;
     }
 
+    /**
+     * Определяет распределение в завимиости от логических соображений.
+     * Например, выдаёт большее значение, если коммивояжёр набрал мало груза
+     * @param salesman
+     * Коммивояжёр
+     * @param resource
+     * Ресурс
+     * @param salesmanInfo
+     * Текущие параметры указанного коммивояжёра
+     * @return
+     * Значение функции распределения
+     */
     private double distributionFunc(Salesman salesman, Resource resource, SalesmanInfo salesmanInfo){
-
-        /*
-        Функция, которая определяет распределение в завимиости от логических соображений.
-        Например, выдаёт большее значение, если коммивояжёр набрал мало груза
-         */
 
         double maxWorkingTime = salesman.getWorkDuration();
         double maxWeight = salesman.getMaxWeight();
@@ -100,6 +113,7 @@ public class ComplexResourceDistributor {
         double maxDeliveryTime = resource.getMaxDeliveryTime();
         double weightPicked = salesmanInfo.weightPicked;
 
+        //Единица устанавливается, чтобы избежать деления на ноль
         if(weightPicked == 0)
             weightPicked = 1;
         if(weight == 0)

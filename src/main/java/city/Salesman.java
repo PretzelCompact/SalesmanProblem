@@ -2,11 +2,10 @@ package city;
 
 import java.util.Objects;
 
+/**
+ * Класс, который представляет коммивояжёра
+ */
 public class Salesman {
-
-    /*
-    Класс, который представляет коммивояжёра
-     */
 
     private double maxWeight;
     private double costPerTime;

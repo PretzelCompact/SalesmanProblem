@@ -1,27 +1,27 @@
 package solutions.util;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.stream.DoubleStream;
 
+/**
+ * Класс для выборки элементов из массива
+ */
 public class Selection {
 
-    /*
-    Selection -- класс, который занимается выборкой элементов массива
-     */
-
     public Random rnd;
-
     public Selection(Random rnd){
         this.rnd = rnd;
     }
 
+    /**
+     * Реализация метода Монте-Карло. Выбирает индекс маассива. Вероятность выбора элемента тем больше, чем больше значение элемента
+     * @param values
+     * массив значений для выбора
+     * @return
+     * индекс выбранного элемента
+     */
     public int roulette(double values[]){
-
-        /*
-        Метод Монте-Карло (рулетка)
-         */
 
         double sum = Arrays.stream(values).sum();
         if(sum == 0)
@@ -32,12 +32,14 @@ public class Selection {
                         .toArray());
     }
 
+    /**
+     * Выбрать иднекс из массива вероятностей
+     * @param probs
+     * массив вероятностей. Сумма всех элементов должна быть равна единице
+     * @return
+     * индекс выбранного элемента
+     */
     private int chooseProb(double probs[]){
-
-        /*
-        На вход подаётся массив вероятностей. Сумма элементов массива должна быть равна единице.
-        Выбирается индекс в соответствии с вероятностным распределением
-         */
 
         double sum = 0;
         double chance;

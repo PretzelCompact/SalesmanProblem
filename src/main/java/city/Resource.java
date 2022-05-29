@@ -2,6 +2,9 @@ package city;
 
 import java.util.Objects;
 
+/**
+ * Класс, представляющий ресурс задачи коммивояжёра
+ */
 public class Resource {
     private double weight;
     private int startVertex;

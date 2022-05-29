@@ -4,6 +4,9 @@ import solutions.ComplexSolution;
 import solutions.util.Selection;
 import solutions.util.SolutionEstimater;
 
+/**
+ * Лёгкий мутатор полного решения задачи. Слегка корректирует маршрут на основе графа средних значений
+ */
 public class LowComplexSolutionMutator {
 
     private SimpleSolutionMutator simpleSolutionMutator;
@@ -18,6 +21,10 @@ public class LowComplexSolutionMutator {
         this.numberOfSimpleSolutionsToMutate = numberOfSimpleSolutionsToMutate;
     }
 
+    /**
+     * Выбирает несколько наихудших частисных решений и незначительно корректирует машрут для каждого из них
+     * @param solution
+     */
     public void mutate(ComplexSolution solution){
         var simpleSolutions = solution.getSimpleSolutions();
         var costs = simpleSolutions.stream().mapToDouble(s->estimater.estimateSimpleSolution(s)).toArray();

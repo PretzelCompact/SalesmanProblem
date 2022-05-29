@@ -9,39 +9,45 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
 
+/**
+ * Оценивает стоимость полного и частного решения задачи коммивояжёра
+ */
 public class SolutionEstimater {
-
-    /*
-    SolutionEstimater.
-    Класс, который оценивает стоимость решения
-    Просто последовательно идёт по точкам маршрута и проверяет точки загрузки/разгрузки
-     */
 
     private City city;
     private double notDeliveredPunishment; //любое положительное число
     private double outOfWorkingTimePunishment;
-    private double minStartWorkingTime;
-    private double maxStartWorkingTime;
     private double deltaStartWorkingTime;
     private double outOfDeliveryTimePunishment;
 
-    public SolutionEstimater(City city, double notDeliveredPunishment, double outOfWorkingTimePunishment, double minStartWorkingTime, double maxStartWorkingTime, double deltaStartWorkingTime, double outOfDeliveryTimePunishment) {
+    public SolutionEstimater(City city, double notDeliveredPunishment, double outOfWorkingTimePunishment, double deltaStartWorkingTime, double outOfDeliveryTimePunishment) {
         this.city = city;
         this.notDeliveredPunishment = notDeliveredPunishment;
         this.outOfWorkingTimePunishment = outOfWorkingTimePunishment;
-        this.minStartWorkingTime = minStartWorkingTime;
-        this.maxStartWorkingTime = maxStartWorkingTime;
         this.deltaStartWorkingTime = deltaStartWorkingTime;
         this.outOfDeliveryTimePunishment = outOfDeliveryTimePunishment;
     }
 
+    /**
+     * Оценивает стоимость частичного решения задачи
+     * @param solution
+     * частичное решение для оценки
+     * @return
+     * стоимость решения
+     */
     public double estimateSimpleSolution(SimpleSolution solution){
+
+        //Проверяет, было ли уже подсчитано решение. Если да, то просто возвращает значение
+
+        //Вызывает оценку решения в зависимости от времени начала движения коммивояжёра
+        //Выбирает среди них наилучшее (с наименьшей стоимостью)
+
         var estimatedValue = solution.getEstimatedValue();
         if(estimatedValue.isEmpty()) {
 
             double minCost = Double.MAX_VALUE;
-            double startWorkingTime = minStartWorkingTime;
-            while(startWorkingTime <= maxStartWorkingTime){
+            double startWorkingTime = solution.getSalesman().getMinStartWorkingTime();
+            while(startWorkingTime <= solution.getSalesman().getMaxStartWorkingTime()){
                 double cost = calculateSimpleSolutionCost(solution, startWorkingTime);
                 if(cost < minCost)
                     minCost = cost;
@@ -53,7 +59,19 @@ public class SolutionEstimater {
         return estimatedValue.get();
     }
 
+    /**
+     * Оценивает частичное решение в зависимости от времени начала движения коммивояжёра
+     * @param solution
+     * частичное решение для оценки
+     * @param startTime
+     * время начала движения
+     * @return
+     * стоимость решения
+     */
     private double calculateSimpleSolutionCost(SimpleSolution solution, double startTime){
+
+        //Последовательно проходит по каждой точке маршрута решения
+        //Если точка является опорной, то производит разгрузку или загрузку ресурсов
 
         var baseIndices = solution.getBaseIndices();
         var route = solution.getRoute();
@@ -123,6 +141,13 @@ public class SolutionEstimater {
         return cost * costModifier;
     }
 
+    /**
+     * Оценивает полное решение задачи коммивояжёра
+     * @param solution
+     * полное решение задачи
+     * @return
+     * стоимость решения
+     */
     public double estimateComplexSolution(ComplexSolution solution){
         return solution.getSimpleSolutions()
                 .stream()

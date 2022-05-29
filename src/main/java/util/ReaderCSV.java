@@ -7,8 +7,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Читает CSV файл из дирректории resources
+ */
 public class ReaderCSV {
 
+    /**
+     * Инкапсулирует CSV в виде списка строк
+     * @param path
+     * путь к файлу внутри resources
+     * @param delimiter
+     * разделить csv-файла
+     * @return
+     * список строк, разделённых на отдельные элементы
+     */
     public static List<List<String>> getRecords(String path, String delimiter){
         var file = getResourceFile(path);
 

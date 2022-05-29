@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * Мутатор частичного решения задачи коммивояжёра
+ */
 public class SimpleSolutionMutator {
 
     private Random rnd;
@@ -19,6 +22,10 @@ public class SimpleSolutionMutator {
         this.mutationProbability = mutationProbability;
     }
 
+    /**
+     * Корректирует частичное решение задачи на основе графа средних скоростей
+     * @param solution
+     */
     public void mutate(SimpleSolution solution){
 
         /*
@@ -58,16 +65,31 @@ public class SimpleSolutionMutator {
             newBaseIndices.add(newRoute.size() - 1);
         }
 
-        //System.out.println(indicesOfBasePointsInRoute);
-        //System.out.println(newBaseIndices);
-
         solution.setRoute(newRoute);
         solution.setBaseIndices(newBaseIndices);
     }
+
+    /**
+     * Находит кратчайший путь между вершинами в графе средних скоростей
+     * @param startVertex
+     * начальная вершина машрута
+     * @param finishVertex
+     * конечная вершина маршрута
+     * @return
+     */
     private List<Integer> generateRouteBetween(int startVertex, int finishVertex){
         return city.getAveragePath(startVertex, finishVertex).getVertexList();
     }
 
+    /**
+     * Выбирает одну соседнюю вершину из списка
+     * @param neighbours
+     * список соседей
+     * @param exceptions
+     * вершины, которые не могут быть выбраны
+     * @return
+     * вершину графа
+     */
     private int pickMutationNeighbour(List<Integer> neighbours, int ... exceptions){
 
         int n = Math.abs(rnd.nextInt()) % neighbours.size();

@@ -6,13 +6,10 @@ import city.Salesman;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Представляет частичное решение задачи коммивояжёра (для одного коммивояжёра)
+ */
 public class SimpleSolution implements Cloneable{
-
-    /*
-    SimpleSolution.
-    Простое решение.
-    Представляет из себя решение задачи для одного коммивояжёра
-     */
 
     private List<Integer> route;
     private List<Integer> baseIndices;

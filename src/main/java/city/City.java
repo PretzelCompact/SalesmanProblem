@@ -8,6 +8,9 @@ import org.jgrapht.graph.SimpleDirectedWeightedGraph;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Класс, представляющий все параметры задачи коммивояжёра с ограничениями
+ */
 public class City {
 
     private Road[][] roads;
@@ -17,7 +20,6 @@ public class City {
     private int verticesNumber;
 
     private SimpleDirectedWeightedGraph<Integer, DefaultWeightedEdge> graphOfAverageWeights;
-    //private BellmanFordShortestPath<Integer, DefaultWeightedEdge> averagesPaths;
     private DijkstraShortestPath<Integer, DefaultWeightedEdge> dijkstraShortestPath;
     private GraphPath<Integer, DefaultWeightedEdge>[][] averagesPaths;
 
@@ -29,14 +31,18 @@ public class City {
         this.startVertex = startVertex;
         this.verticesNumber = verticesNumber;
 
+
+        //Добавить вершины в граф
         graphOfAverageWeights = new SimpleDirectedWeightedGraph<Integer, DefaultWeightedEdge>(DefaultWeightedEdge.class);
         for(int i = 0; i < verticesNumber; i++){
             graphOfAverageWeights.addVertex(i);
         }
 
+        //Инициализация посика пути в графе средних скоростей
         dijkstraShortestPath = new DijkstraShortestPath<>(graphOfAverageWeights);
         averagesPaths = new GraphPath[verticesNumber][verticesNumber];
 
+        //Инициализация рёбер в графе средних скоростей по матрице дорог
         for(int i = 0; i < verticesNumber; i++){
             for(int j = 0; j < verticesNumber; j++){
                 if(roads[i][j] != null){
@@ -45,24 +51,31 @@ public class City {
                 }
             }
         }
-
-        //averagesPaths = new BellmanFordShortestPath<>(graphOfAverageWeights);
-        //averagesPaths = new DijkstraShortestPath<>(graphOfAverageWeights);
     }
 
+    /**
+     * Получить дорогу из матрицы дорог
+     * @param start
+     * Индекс начальной вершины дороги
+     * @param finish
+     * Индекс конечной вершины дороги
+     * @return
+     * Искомая дорога
+     */
     public Road getRoad(int start, int finish){
         return roads[start][finish];
     }
 
+    /**
+     * Получить путь из графа средних скоростей
+     * @param start
+     * Индекс начальной вершины
+     * @param finish
+     * Индекс конечной вершины
+     * @return
+     * Путь в графе
+     */
     public GraphPath<Integer, DefaultWeightedEdge> getAveragePath(int start, int finish){
-        //System.out.println("[" + start + ", " + finish + "]");
-
-       // var startTime = System.nanoTime();
-        //var value = averagesPaths.getPath(start, finish);
-
-        //var finishTime = System.nanoTime();
-        //System.out.println((finishTime - startTime) / 1000000000d);
-        //return value;
 
         if(averagesPaths[start][finish] == null){
             averagesPaths[start][finish] = dijkstraShortestPath.getPath(start, finish);

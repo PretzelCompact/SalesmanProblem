@@ -2,12 +2,11 @@ package solutions;
 
 import java.util.List;
 
+/**
+ * Представляет полное решение задачи коммивояжёра. Содержит список частичных решений
+ */
 public class ComplexSolution implements Cloneable{
 
-    /*
-    ComplexSolution.
-    Представляет совокупность SimpleSolution
-     */
 
     private List<SimpleSolution> simpleSolutions;
 

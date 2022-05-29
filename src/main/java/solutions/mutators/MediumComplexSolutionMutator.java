@@ -8,6 +8,9 @@ import solutions.util.SolutionEstimater;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+/**
+ * Средний мутатор полного решения задачи. Перемешивает последовательность точек разгрузки/загрузки для каждого отдельного коммивояжёра
+ */
 public class MediumComplexSolutionMutator {
 
     private SimpleSolutionGenerator simpleSolutionGenerator;
@@ -22,6 +25,10 @@ public class MediumComplexSolutionMutator {
         this.numberOfSolutionsToMutateDuringMediumMutation = numberOfSolutionsToMutateDuringMediumMutation;
     }
 
+    /**
+     * Рулеточно выбирает несколько худших частичных решений и для каждого из них генерирует новое распределение опорных точек
+     * @param solution
+     */
     public void mutate(ComplexSolution solution){
 
         var simpleSolutions = new ArrayList<>(solution.getSimpleSolutions());

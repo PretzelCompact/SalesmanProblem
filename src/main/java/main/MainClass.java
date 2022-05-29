@@ -23,9 +23,7 @@ public class MainClass {
         algorithmParams.lowMutationProbability = .1d;
         algorithmParams.numberOfSolutionsToMutateDuringMediumMutation = 5;
         algorithmParams.numberOfSimpleSolutionsToMutateDuringLowMutation = 5;
-        algorithmParams.minStartWorkingTime = 4d;
-        algorithmParams.maxStartWorkingTime = 13d;
-        algorithmParams.deltaStartWorkingTime = 1d;
+        algorithmParams.deltaStartWorkingTime = 0.5d;
 
         var rnd = new Random(LocalDateTime.now().getNano());
 

@@ -4,12 +4,10 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.DoubleStream;
 
+/**
+ * Класс, представляющий дорогу межуд вершинами задачи коммивояжёра
+ */
 public class Road {
-
-    /*
-    Класс, который представляет одно ребро графа
-    Имеет расстояние и вектор скоростей
-     */
 
     private double distance;
     private double[] speeds;
@@ -35,6 +33,13 @@ public class Road {
         this.y2 = y2;
     }
 
+    /**
+     * Получить информацию о перемещении по этой дороге
+     * @param startTime
+     * Время начала движения
+     * @return
+     * Экземпляр MovementInformation
+     */
     public MovementInformation getMovementInfo(double startTime){
         var info = new MovementInformation();
 
@@ -44,6 +49,13 @@ public class Road {
         return info;
     }
 
+    /**
+     * Получить продолжительность движения по дороге
+     * @param startTime
+     * Время начала движения
+     * @return
+     * Прошедшее время
+     */
     public double getPassedTime(double startTime){
         if(startTime >= 24)
             return 24;
@@ -67,6 +79,11 @@ public class Road {
         return timePassed;
     }
 
+    /**
+     * Усреднить значение скоростей и получить средний вес дороги
+     * @return
+     * Средний вес дороги
+     */
     public double getAverageWeight(){
         var averageSpeed = DoubleStream.of(speeds).average().getAsDouble();
         return distance / averageSpeed;
