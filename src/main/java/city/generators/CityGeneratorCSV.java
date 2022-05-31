@@ -4,9 +4,14 @@ import city.City;
 import city.Resource;
 import city.Road;
 import city.Salesman;
+import util.IntVector2;
 import util.ReaderCSV;
 
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 public class CityGeneratorCSV {
@@ -18,11 +23,11 @@ public class CityGeneratorCSV {
     private Random rnd;
 
     private int numberOfVertices;
-    private final double checkRadius = 0.0001d;
+    private final double CHECK_RADIUS = 0.01d;
 
     public CityGeneratorCSV(String graphInfoPath, String resourcesInfoPath, String salesmenInfoPath, int numberOfVertices, Random rnd){
 
-        graphRecords = ReaderCSV.getRecords(graphInfoPath, ",");
+        graphRecords = ReaderCSV.getRecords(graphInfoPath, ";");
         resourcesRecords = ReaderCSV.getRecords(resourcesInfoPath, ";");
         salesmenRecords = ReaderCSV.getRecords(salesmenInfoPath, ";");
         this.numberOfVertices = numberOfVertices;
@@ -42,30 +47,42 @@ public class CityGeneratorCSV {
         return city;
     }
 
-    private Road[][] generateRoads(){
+    private double convertCommaStringToDouble(String str){
+        try{
+            var format = NumberFormat.getInstance(Locale.FRANCE);
+            var number = format.parse(str);
+            return number.doubleValue();
+        } catch (ParseException exception){
+            throw new RuntimeException("Parse Exception");
+        }
+    }
+
+    private HashMap<IntVector2, Road> generateRoads(){
         final double ROAD_NOT_EXIST_VALUE = 1000000d;
-        var roads = new Road[numberOfVertices][numberOfVertices];
+        var roads = new HashMap<IntVector2, Road>();
 
         for(int i = 1; i < graphRecords.size(); i++){
             var record = graphRecords.get(i);
 
             int from = Integer.parseInt(record.get(5));
             int to = Integer.parseInt(record.get(6));
-            double distance = Double.parseDouble(record.get(7));
-            double speed = Double.parseDouble(record.get(8));
-            double cost = Double.parseDouble(record.get(9));
-            double reverseCost = Double.parseDouble(record.get(10));
+            double distance = convertCommaStringToDouble(record.get(7));
+            double speed = convertCommaStringToDouble(record.get(8));
+            double cost = convertCommaStringToDouble(record.get(9));
+            double reverseCost = convertCommaStringToDouble(record.get(10));
 
-            double x1 = Double.parseDouble(record.get(11));
-            double y1 = Double.parseDouble(record.get(12));
-            double x2 = Double.parseDouble(record.get(13));
-            double y2 = Double.parseDouble(record.get(14));
+            double x1 = convertCommaStringToDouble(record.get(11));
+            double y1 = convertCommaStringToDouble(record.get(12));
+            double x2 = convertCommaStringToDouble(record.get(13));
+            double y2 = convertCommaStringToDouble(record.get(14));
 
             if(cost != ROAD_NOT_EXIST_VALUE){
-                roads[from][to] = generateRoad(distance, speed, cost, x1, y1, x2, y2);
+                var road = generateRoad(distance, speed, cost, x1, y1, x2, y2);
+                roads.put(new IntVector2(from, to), road);
             }
             if(reverseCost != ROAD_NOT_EXIST_VALUE){
-                roads[to][from] = generateRoad(distance, speed, reverseCost, x1, y1, x2, y2);
+                var road = generateRoad(distance, speed, reverseCost, x1, y1, x2, y2);
+                roads.put(new IntVector2(to, from), road);
             }
         }
 
@@ -94,7 +111,7 @@ public class CityGeneratorCSV {
         return speeds;
     }
 
-    private Resource[] generateResources(Road[][] roads, int startVertex){
+    private Resource[] generateResources(HashMap<IntVector2, Road> roads, int startVertex){
         var resources = new Resource[resourcesRecords.size() - 3];
 
         for(int i = 3; i < resourcesRecords.size(); i++){
@@ -123,9 +140,9 @@ public class CityGeneratorCSV {
         for(int i = 0; i < salesmenRecords.size(); i++){
             var rec = salesmenRecords.get(i);
 
-            double maxWeight = Double.parseDouble(rec.get(1));
-            double costPerDistance = Double.parseDouble(rec.get(6));
-            double costPerTime = Double.parseDouble(rec.get(7));
+            double maxWeight = convertCommaStringToDouble(rec.get(1));
+            double costPerDistance = convertCommaStringToDouble(rec.get(6));
+            double costPerTime = convertCommaStringToDouble(rec.get(7));
 
             var times = rec.get(9).split("-");
             double minWorkingTime = convertStringToTime(times[0]);
@@ -148,7 +165,7 @@ public class CityGeneratorCSV {
      * @return
      * Индекс вершины из матрицы дорог
      */
-    private int getStartVertex(Road[][] roads){
+    private int getStartVertex(HashMap<IntVector2, Road> roads){
 
         double x = 39.607592d;
         double y = 47.203139d;
@@ -167,20 +184,17 @@ public class CityGeneratorCSV {
      * @return
      * Индекс вершины из матрицы дорог
      */
-    private int getVertexFromRoad(Road[][] roads, double x, double y){
-        for(int i = 0; i < roads.length; i++){
-            for(int j = i + 1; j < roads[0].length; j++){
+    private int getVertexFromRoad(HashMap<IntVector2, Road> roads, double x, double y){
 
-                var road = roads[i][j];
-                if(road == null)
-                    continue;
+        for(var key : roads.keySet()){
+            var road = roads.get(key);
 
-                if(isPointInsideCircle(x, y, road.getX1(), road.getY1(), checkRadius)){
-                    return i;
-                } else if(isPointInsideCircle(x, y, road.getX2(), road.getY2(),checkRadius)){
-                    return j;
-                }
+            if(isPointInsideCircle(x, y, road.getX1(), road.getY1(), CHECK_RADIUS)){
+                return key.from();
+            } else if(isPointInsideCircle(x, y, road.getX2(), road.getY2(),CHECK_RADIUS)){
+                return key.to();
             }
+
         }
         throw  new RuntimeException("Vertex (" + x + ", " + y + ") doesn't exist in graph");
     }
@@ -216,7 +230,7 @@ public class CityGeneratorCSV {
      * Число часов с момента 00-00
      */
     private double convertStringToTime(String strTime){
-        var strs = strTime.split("-");
+        var strs = strTime.split(":");
 
         double hours = Double.parseDouble(strs[0]);
         double minutes = Double.parseDouble(strs[1]);

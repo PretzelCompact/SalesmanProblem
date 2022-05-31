@@ -4,8 +4,10 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleDirectedWeightedGraph;
+import util.IntVector2;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -13,7 +15,7 @@ import java.util.List;
  */
 public class City {
 
-    private Road[][] roads;
+    private HashMap<IntVector2, Road> roads;
     private Resource[] resources;
     private Salesman[] salesmen;
     private int startVertex;
@@ -21,9 +23,9 @@ public class City {
 
     private SimpleDirectedWeightedGraph<Integer, DefaultWeightedEdge> graphOfAverageWeights;
     private DijkstraShortestPath<Integer, DefaultWeightedEdge> dijkstraShortestPath;
-    private GraphPath<Integer, DefaultWeightedEdge>[][] averagesPaths;
+    private HashMap<IntVector2, GraphPath<Integer, DefaultWeightedEdge>> averagesPaths;
 
-    public City(Road[][] roads, Resource[] resources, Salesman[] salesmen, int startVertex, int verticesNumber){
+    public City(HashMap<IntVector2, Road> roads, Resource[] resources, Salesman[] salesmen, int startVertex, int verticesNumber){
 
         this.roads = roads;
         this.resources = resources;
@@ -40,16 +42,15 @@ public class City {
 
         //Инициализация посика пути в графе средних скоростей
         dijkstraShortestPath = new DijkstraShortestPath<>(graphOfAverageWeights);
-        averagesPaths = new GraphPath[verticesNumber][verticesNumber];
+        averagesPaths = new HashMap<>();
 
         //Инициализация рёбер в графе средних скоростей по матрице дорог
-        for(int i = 0; i < verticesNumber; i++){
-            for(int j = 0; j < verticesNumber; j++){
-                if(roads[i][j] != null){
-                    var edge = graphOfAverageWeights.addEdge(i,j);
-                    graphOfAverageWeights.setEdgeWeight(edge,roads[i][j].getAverageWeight());
-                }
-            }
+        for(var key : roads.keySet()){
+            if(key.to() == key.from())
+                continue;
+            var road = roads.get(key);
+            var edge = graphOfAverageWeights.addEdge(key.from(), key.to());
+            graphOfAverageWeights.setEdgeWeight(edge,road.getAverageWeight());
         }
     }
 
@@ -63,7 +64,7 @@ public class City {
      * Искомая дорога
      */
     public Road getRoad(int start, int finish){
-        return roads[start][finish];
+        return roads.get(new IntVector2(start, finish));
     }
 
     /**
@@ -77,19 +78,24 @@ public class City {
      */
     public GraphPath<Integer, DefaultWeightedEdge> getAveragePath(int start, int finish){
 
-        if(averagesPaths[start][finish] == null){
-            averagesPaths[start][finish] = dijkstraShortestPath.getPath(start, finish);
+        var vec = new IntVector2(start, finish);
+        var path = averagesPaths.get(vec);
+
+        if(path == null){
+            path = dijkstraShortestPath.getPath(start, finish);
+            averagesPaths.put(vec, path);
         }
-        return averagesPaths[start][finish];
+        return path;
     }
 
     public List<Integer> getNeighboursFrom(int vertex){
         var neighbours = new ArrayList<Integer>();
-        for(int j = 0; j < verticesNumber; j++){
-            if(roads[vertex][j] != null){
-                neighbours.add(j);
-            }
-        }
+
+        neighbours.addAll(roads.keySet().stream()
+                .filter(vec->vec.from() == vertex)
+                .map(vec->vec.to())
+                .toList());
+
         return neighbours;
     }
 

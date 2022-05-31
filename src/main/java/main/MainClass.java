@@ -13,14 +13,14 @@ public class MainClass {
     public static void main(String[] args){
 
         var algorithmParams = new AlgorithmParams();
-        algorithmParams.numberOfStrongMutated = 1;
+        algorithmParams.numberOfStrongMutated = 5;
         algorithmParams.numberOfMediumMutated = 5;
-        algorithmParams.numberOfLowMutated = 20;
-        algorithmParams.numberOfSurvivedSolutions = 10;
-        algorithmParams.notDeliveredPunishment = 1;
-        algorithmParams.outOfWorkingTimePunishment = 1;
-        algorithmParams.outOfDeliveryTimePunishment = 1;
-        algorithmParams.lowMutationProbability = .1d;
+        algorithmParams.numberOfLowMutated = 2;
+        algorithmParams.numberOfSurvivedSolutions = 3;
+        algorithmParams.notDeliveredPunishment = 10;
+        algorithmParams.outOfWorkingTimePunishment = 10;
+        algorithmParams.outOfDeliveryTimePunishment = 10;
+        algorithmParams.lowMutationProbability = .01d;
         algorithmParams.numberOfSolutionsToMutateDuringMediumMutation = 5;
         algorithmParams.numberOfSimpleSolutionsToMutateDuringLowMutation = 5;
         algorithmParams.deltaStartWorkingTime = 0.5d;
@@ -71,6 +71,8 @@ public class MainClass {
 
         var generator = new CityGeneratorCSV("graph_info.csv", "res_info.csv", "vehicles_info.csv", 295242, rnd);
         var city = generator.generate();
+
+        System.out.println("City generated");
 
         var algorithm = new MainAlgorithm(algorithmParams, city, rnd);
         algorithm.computeSolution();
